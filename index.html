@@ -3,392 +3,490 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Happy Birthday 💜</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Caveat:wght@600;700&family=Nunito:wght@700;800&display=swap">
+<title>A Surprise For You 💜</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;700&display=swap">
 <style>
-:root {
-  --bg-deep:  #0b0118;
-  --bg-mid:   #1a0a2e;
-  --purple:   #7c3aed;
-  --p-light:  #a78bfa;
-  --p-pale:   #ddd6fe;
-  --pink:     #ec4899;
-  --pink-l:   #f9a8d4;
-  --gold:     #fbbf24;
-  --white:    #faf5ff;
-  --ff-d:'Pacifico',cursive;
-  --ff-h:'Caveat',cursive;
-  --ff-b:'Nunito',system-ui,sans-serif;
+:root{
+  --bg:#08011a;
+  --p1:#3b0764;
+  --p2:#7c3aed;
+  --p3:#a855f7;
+  --p4:#c084fc;
+  --p5:#e879f9;
+  --pink:#f0abfc;
+  --gold:#fbbf24;
+  --white:#faf5ff;
+  --ff-serif:'Cormorant Garamond',Georgia,serif;
+  --ff-sans:'Montserrat',system-ui,sans-serif;
+  --ff-disp:'Pacifico',cursive;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;height:100%;overflow:hidden;touch-action:manipulation}
 body{
-  font-family:var(--ff-b);
-  background:var(--bg-deep);
+  font-family:var(--ff-sans);
+  background:var(--bg);
   color:var(--white);
   -webkit-tap-highlight-color:transparent;
   user-select:none;
 }
 
-/* ═══════════════════════════════
-   STARS CANVAS (behind everything)
-══════════════════════════════════ */
-#starsCanvas{
-  position:fixed;inset:0;z-index:0;pointer-events:none;
-}
+/* ━━━ BACKGROUND CANVAS (stars) ━━━ */
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-/* ═══════════════════════════════
-   SCREENS
-══════════════════════════════════ */
+/* ━━━ SCREENS ━━━ */
 .screen{
   position:fixed;inset:0;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;
-  z-index:10;
+  opacity:0;pointer-events:none;z-index:10;
 }
-.screen.active{opacity:1;pointer-events:all}
+.screen.on{opacity:1;pointer-events:all}
 
-/* ═══════════════════════════════
-   SCREEN 1 — RIBBON CUT
-══════════════════════════════════ */
-#s1{
-  background:radial-gradient(ellipse at 50% 20%,#2d1458 0%,#0b0118 65%);
-  gap:0;
-  overflow:hidden;
-}
+/* ━━━━━━━━━━━━━━━━━━━━━━━
+   SCREEN 1  —  RIBBON CUT
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+#s1{background:radial-gradient(ellipse at 50% 25%,#1e0848 0%,#08011a 65%)}
 
-/* — title — */
+/* Title */
 .s1-title{
-  font-family:var(--ff-d);
-  font-size:clamp(2.2rem,8.5vw,4.8rem);
+  position:relative;z-index:3;
+  font-family:var(--ff-disp);
+  font-size:clamp(2rem,8vw,4.5rem);
   color:var(--white);
-  text-align:center;
-  padding:0 24px;
+  text-align:center;padding:0 24px;
+  margin-bottom:clamp(44px,8vh,80px);
+  letter-spacing:.03em;
   text-shadow:
-    0 0 30px rgba(167,139,250,.9),
-    0 0 70px rgba(139,92,246,.5),
+    0 0 24px rgba(192,132,252,.9),
+    0 0 60px rgba(139,92,246,.5),
     0 0 120px rgba(192,38,211,.3);
-  animation:glow 2.5s ease-in-out infinite alternate;
-  margin-bottom:52px;
-  position:relative;z-index:2;
+  animation:titlePulse 3s ease-in-out infinite alternate;
 }
-@keyframes glow{
-  from{text-shadow:0 0 25px rgba(167,139,250,.8),0 0 60px rgba(139,92,246,.4)}
-  to  {text-shadow:0 0 50px rgba(216,180,254,1),0 0 100px rgba(167,139,250,.7),0 0 160px rgba(192,38,211,.4)}
+@keyframes titlePulse{
+  from{text-shadow:0 0 20px rgba(192,132,252,.8),0 0 50px rgba(139,92,246,.4)}
+  to  {text-shadow:0 0 42px rgba(240,171,252,1),0 0 90px rgba(192,132,252,.7),0 0 150px rgba(192,38,211,.4)}
 }
 
-/* — ribbon stage — */
+/* ─── RIBBON STAGE ─── */
 .ribbon-stage{
-  position:relative;width:100%;height:140px;
+  position:relative;width:100%;
+  height:clamp(160px,30vw,220px);
   display:flex;align-items:center;
-  z-index:2;overflow:visible;
+  cursor:pointer;z-index:3;
+  -webkit-tap-highlight-color:transparent;
+}
+/* Expand tap area on mobile */
+.ribbon-stage::after{
+  content:'';position:absolute;inset:-30px 0;
 }
 
-.ribbon-piece{
-  position:absolute;top:50%;height:76px;
-  transform:translateY(-50%);
-  background:
-    linear-gradient(90deg,
-      rgba(255,255,255,.12) 0%,
-      rgba(255,255,255,.0) 40%,
-      rgba(255,255,255,.18) 60%,
-      rgba(255,255,255,.0) 100%
-    ),
-    linear-gradient(180deg,
-      rgba(249,168,212,.5) 0%,
-      #c084fc 12%,
-      #9333ea 35%,
-      #7c3aed 50%,
-      #9333ea 65%,
-      #c084fc 88%,
-      rgba(249,168,212,.5) 100%
-    );
-  box-shadow:
-    0 0 32px rgba(192,38,211,.5),
-    0 0 8px rgba(249,168,212,.4),
-    inset 0 1px 0 rgba(255,255,255,.25),
-    inset 0 -1px 0 rgba(0,0,0,.2);
-  transition:opacity .05s;
-}
-.ribbon-piece.left {
-  left:0;right:calc(50% - 1px);
-  border-radius:0 2px 2px 0;
-  transform-origin:right center;
-  transform:translateY(-50%);
-}
-.ribbon-piece.right{
-  left:calc(50% + 1px);right:0;
-  border-radius:2px 0 0 2px;
-  transform-origin:left center;
-  transform:translateY(-50%);
+/* ─── BOW SVG ─── */
+#ribbonSvg{
+  width:100%;height:100%;
+  overflow:visible;
+  position:absolute;top:0;left:0;
 }
 
-/* — ribbon cut animations — */
-.ribbon-piece.left.falling {
-  animation:fallLeft 1s cubic-bezier(.4,0,1,1) .25s forwards;
+/* SVG groups – animate on cut */
+#gLeft, #gRight, #gCenter{
+  transition:none;
 }
-.ribbon-piece.right.falling{
-  animation:fallRight 1s cubic-bezier(.4,0,1,1) .25s forwards;
-}
+#gLeft.fall  {animation:fallLeft  1s cubic-bezier(.4,.05,1,.8) .22s both}
+#gRight.fall {animation:fallRight 1s cubic-bezier(.4,.05,1,.8) .22s both}
+#gCenter.fall{animation:fallDown  .85s cubic-bezier(.4,.05,1,.9) .15s both}
+
 @keyframes fallLeft{
-  0%  {transform:translateY(-50%);opacity:1}
-  100%{transform:translateY(calc(-50% + 100px)) translateX(-55%) rotate(-28deg);opacity:0}
+  to{transform:translateX(-45%) translateY(55px) rotate(-22deg);opacity:0}
 }
 @keyframes fallRight{
-  0%  {transform:translateY(-50%);opacity:1}
-  100%{transform:translateY(calc(-50% + 100px)) translateX(55%)  rotate(28deg); opacity:0}
+  to{transform:translateX(45%) translateY(55px) rotate(22deg);opacity:0}
+}
+@keyframes fallDown{
+  to{transform:translateY(90px) scale(.5) rotate(10deg);opacity:0}
 }
 
 /* ─── SCISSORS ─── */
-.scissors-btn{
+.sc-wrap{
   position:absolute;left:50%;top:50%;
   transform:translate(-50%,-50%);
-  z-index:20;cursor:pointer;
-  animation:scissorIdle 1.8s ease-in-out infinite;
-  /* Increase tap area on mobile */
-  padding:20px;
-  border-radius:50%;
+  z-index:20;pointer-events:none;
+  animation:scBob 2s ease-in-out infinite;
+  transform-origin:center;
 }
-.scissors-btn:hover{filter:brightness(1.25) drop-shadow(0 0 12px rgba(216,180,254,.8))}
-.scissors-btn.cutting{animation:none!important}
-@keyframes scissorIdle{
-  0%,100%{transform:translate(-50%,-50%) rotate(-6deg) scale(1)}
-  50%    {transform:translate(-50%,-50%) rotate(6deg)  scale(1.07)}
+@keyframes scBob{
+  0%,100%{transform:translate(-50%,-50%) rotate(-8deg) scale(1)}
+  50%    {transform:translate(-50%,-50%) rotate(8deg)  scale(1.06)}
 }
+.sc-wrap.cutting{animation:none}
 
 .sc-svg{
-  width:clamp(130px,32vw,180px);
-  height:clamp(84px,20vw,114px);
-  overflow:visible;
-  filter:drop-shadow(0 4px 16px rgba(0,0,0,.5));
+  width:clamp(100px,22vw,140px);
+  height:auto;overflow:visible;
+  filter:drop-shadow(0 0 10px rgba(192,132,252,.7));
 }
-
-/* both blade groups rotate around origin point (pivot is at 0,0 after translate wrapper) */
-#bTop,#bBot{
+/* Blade groups rotate around pivot (0,0) in the translated group */
+#bT,#bB{
   transform-origin:0 0;
   transition:transform .12s ease-in;
 }
-#bTop{transform:rotate(-17deg)}
-#bBot{transform:rotate(17deg)}
-.cutting #bTop{transform:rotate(-2deg)}
-.cutting #bBot{transform:rotate(2deg)}
-.snipped  #bTop{transform:rotate(0deg)}
-.snipped  #bBot{transform:rotate(0deg)}
+#bT{transform:rotate(-19deg)}
+#bB{transform:rotate(19deg)}
+.cutting #bT{transform:rotate(-3deg)}
+.cutting #bB{transform:rotate(3deg)}
+.snipped  #bT,
+.snipped  #bB{transform:rotate(0)}
 
-/* — sparkles burst — */
+/* Pulsing hint ring around scissors */
+.sc-ring{
+  position:absolute;left:50%;top:50%;
+  width:72px;height:72px;
+  border-radius:50%;
+  border:2px solid rgba(240,171,252,.5);
+  transform:translate(-50%,-50%);
+  pointer-events:none;z-index:19;
+  animation:ringPulse 1.8s ease-out infinite;
+}
+@keyframes ringPulse{
+  0%  {width:70px;height:70px;opacity:.8}
+  100%{width:150px;height:150px;opacity:0}
+}
+
+/* ─── SPARKLES ─── */
 .spark{
-  position:absolute;
-  left:50%;top:50%;
-  pointer-events:none;font-size:clamp(14px,4vw,22px);
-  opacity:0;z-index:30;
+  position:absolute;left:50%;top:50%;
+  pointer-events:none;z-index:40;
+  font-size:clamp(14px,3.5vw,20px);
+  opacity:0;
 }
-.spark.go{animation:sparkFly .9s ease-out forwards}
+.spark.go{animation:sparkFly 1s ease-out forwards}
 @keyframes sparkFly{
-  0%  {opacity:1;transform:translate(-50%,-50%) scale(.3)}
-  50% {opacity:1;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(1.3)}
-  100%{opacity:0;transform:translate(calc(-50% + var(--tx2)),calc(-50% + var(--ty2))) scale(.6)}
+  0%  {opacity:1;transform:translate(-50%,-50%) scale(.2)}
+  40% {opacity:1;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(1.4)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--tx2)),calc(-50% + var(--ty2))) scale(.4)}
 }
 
-/* — hint text — */
+/* ─── HINT TEXT ─── */
 .s1-hint{
-  position:relative;z-index:2;
-  margin-top:52px;
-  font-family:var(--ff-h);
-  font-size:clamp(1.1rem,4vw,1.5rem);
-  color:rgba(196,181,253,.75);
+  position:relative;z-index:3;
+  margin-top:clamp(28px,5vh,52px);
+  font-family:var(--ff-serif);
+  font-style:italic;
+  font-size:clamp(1rem,3.5vw,1.4rem);
+  color:rgba(220,189,255,.65);
   text-align:center;padding:0 32px;
-  animation:pulse 2.2s ease-in-out infinite;
+  letter-spacing:.04em;
+  animation:hintFade 2.5s ease-in-out infinite alternate;
 }
-@keyframes pulse{
-  0%,100%{opacity:.6;transform:scale(1)}
-  50%    {opacity:1;transform:scale(1.03)}
+@keyframes hintFade{
+  from{opacity:.5}to{opacity:1}
 }
 
-/* ═══════════════════════════════
-   SCREEN 2 — HAPPY BIRTHDAY
-══════════════════════════════════ */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SCREEN 2  —  NAME REVEAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #s2{
-  background:radial-gradient(ellipse at 50% 50%,#2d1458 0%,#0b0118 100%);
-  gap:12px;cursor:pointer;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 50%,#1e0848 0%,#08011a 100%);
+  cursor:pointer;overflow:hidden;
+  gap:0;
 }
-#s2 canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
-.float-wrap{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+#auroraCanvas,#particleCanvas{
+  position:absolute;inset:0;pointer-events:none;
+}
+#auroraCanvas{z-index:1}
+#particleCanvas{z-index:2}
+
+.float-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}
 .fh{
   position:absolute;bottom:-80px;opacity:0;
   animation:floatHeart linear infinite;
 }
 @keyframes floatHeart{
   0%  {opacity:0;transform:translateY(0) rotate(0deg)}
-  10% {opacity:.8}
-  90% {opacity:.3}
-  100%{opacity:0;transform:translateY(-115vh) rotate(380deg)}
+  10% {opacity:.7}
+  90% {opacity:.2}
+  100%{opacity:0;transform:translateY(-115vh) rotate(400deg)}
 }
 
 .s2-inner{
-  position:relative;z-index:2;
+  position:relative;z-index:10;
   display:flex;flex-direction:column;align-items:center;
-  gap:clamp(8px,2.5vw,20px);
-  padding:0 24px;text-align:center;
+  gap:clamp(10px,2.5vh,24px);
+  padding:0 32px;text-align:center;
   pointer-events:none;
 }
-.s2-emoji{
-  font-size:clamp(44px,12vw,72px);
-  opacity:0;transform:scale(0);
-  transition:opacity .01s;
+
+/* Big glowing heart */
+.s2-heart{
+  font-size:clamp(52px,12vw,80px);
   line-height:1;
+  opacity:0;transform:scale(0.4);
+  transition:none;
+  filter:drop-shadow(0 0 20px rgba(192,38,211,.8));
 }
-.s2-emoji.show{animation:popBounce .7s cubic-bezier(.34,1.56,.64,1) forwards}
-@keyframes popBounce{
-  from{transform:scale(0);opacity:0}
-  to  {transform:scale(1);opacity:1}
+.s2-heart.in{
+  animation:heartPop .9s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes heartPop{
+  0%  {opacity:0;transform:scale(.3)}
+  60% {opacity:1;transform:scale(1.15)}
+  100%{opacity:1;transform:scale(1)}
 }
 
-.s2-hb{
-  font-family:var(--ff-d);
-  font-size:clamp(2.6rem,10.5vw,6.5rem);
-  line-height:1.05;
-  background:linear-gradient(135deg,#f0abfc,#c084fc 30%,#818cf8 60%,#93c5fd);
-  -webkit-background-clip:text;background-clip:text;
-  color:transparent;
-  min-height:1em;
-}
-.s2-hb .lt{
-  display:inline-block;
-  opacity:0;transform:translateY(50px) scale(.6);
-  transition:opacity .4s cubic-bezier(.34,1.56,.64,1),
-              transform .4s cubic-bezier(.34,1.56,.64,1);
-}
-.s2-hb .lt.in{opacity:1;transform:translateY(0) scale(1)}
-
-.s2-wife{
-  font-family:var(--ff-h);
-  font-size:clamp(1.5rem,6vw,3.2rem);
-  font-weight:700;
-  color:var(--pink-l);
-  letter-spacing:.03em;
-  opacity:0;transform:translateY(20px);
-  transition:opacity .6s,transform .6s;
-}
-.s2-wife.in{opacity:1;transform:translateY(0)}
-
+/* Her name — cinematic blur-to-clear */
 .s2-name{
-  font-family:var(--ff-d);
-  font-size:clamp(2rem,8vw,4rem);
-  color:var(--gold);
-  text-shadow:0 0 28px rgba(251,191,36,.65);
-  opacity:0;transform:scale(.8);
-  transition:opacity .6s,transform .6s cubic-bezier(.34,1.56,.64,1);
+  font-family:var(--ff-serif);
+  font-size:clamp(3rem,13vw,8rem);
+  font-weight:600;
+  letter-spacing:.12em;
+  line-height:1;
+  background:linear-gradient(135deg,#f0abfc 0%,#c084fc 40%,#818cf8 70%,#93c5fd 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  opacity:0;filter:blur(28px);transform:scale(1.25);letter-spacing:.4em;
+  transition:none;
 }
-.s2-name.in{opacity:1;transform:scale(1)}
-
-.s2-hearts-row{
-  display:flex;gap:clamp(8px,2vw,16px);
-  font-size:clamp(1.2rem,4vw,1.8rem);
-  opacity:0;transition:opacity .5s;
+.s2-name.in{
+  animation:nameReveal 2s cubic-bezier(.16,1,.3,1) forwards;
 }
-.s2-hearts-row.in{opacity:1}
+@keyframes nameReveal{
+  0%  {opacity:0;filter:blur(28px);transform:scale(1.25);letter-spacing:.4em}
+  40% {opacity:.9}
+  100%{opacity:1;filter:blur(0);transform:scale(1);letter-spacing:.08em}
+}
 
+/* "My Lovely Wife" — letter-spacing shrink */
+.s2-wife{
+  font-family:var(--ff-serif);
+  font-style:italic;
+  font-size:clamp(1.2rem,5vw,2.4rem);
+  color:rgba(249,168,212,.85);
+  opacity:0;letter-spacing:.6em;transform:translateY(10px);
+  transition:none;
+}
+.s2-wife.in{
+  animation:wifeReveal 1.4s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes wifeReveal{
+  0%  {opacity:0;letter-spacing:.6em;transform:translateY(10px)}
+  100%{opacity:1;letter-spacing:.18em;transform:translateY(0)}
+}
+
+/* Decorative line */
+.s2-line{
+  width:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(192,132,252,.5),transparent);
+  opacity:0;transition:none;
+  max-width:300px;
+}
+.s2-line.in{
+  animation:lineExpand 1s ease-out forwards;
+}
+@keyframes lineExpand{
+  0%  {width:0;opacity:0}
+  50% {opacity:1}
+  100%{width:min(280px,70vw);opacity:.7}
+}
+
+/* Tap hint */
 .s2-hint{
-  font-family:var(--ff-h);
-  font-size:clamp(.95rem,3.5vw,1.3rem);
-  color:rgba(196,181,253,.6);
-  animation:pulse 2.2s ease-in-out infinite;
-  opacity:0;transition:opacity .6s;
-  margin-top:clamp(12px,3vw,28px);
+  font-family:var(--ff-sans);
+  font-size:clamp(.8rem,2.8vw,1rem);
+  font-weight:300;
+  color:rgba(196,181,253,.45);
+  letter-spacing:.12em;text-transform:uppercase;
+  opacity:0;transition:none;
+  margin-top:clamp(16px,3vh,32px);
 }
-.s2-hint.in{opacity:1}
+.s2-hint.in{animation:fadeUp .8s ease-out forwards}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(12px)}
+  to  {opacity:1;transform:translateY(0)}
+}
 
-/* ═══════════════════════════════
-   PURPLE WIPE TRANSITION
-══════════════════════════════════ */
+/* ━━━ WIPE TRANSITION ━━━ */
 #wipe{
   position:fixed;inset:0;z-index:900;
-  background:linear-gradient(135deg,#4c1d95,#7c3aed);
+  background:linear-gradient(135deg,#4c1d95,#7c3aed 50%,#5b21b6);
   transform:translateY(100%);
-  transition:transform .45s cubic-bezier(.76,0,.24,1);
   pointer-events:none;
+  transition:transform .5s cubic-bezier(.76,0,.24,1);
 }
-#wipe.in {transform:translateY(0)}
+#wipe.in {transform:translateY(0);pointer-events:all}
 #wipe.out{transform:translateY(-100%)}
 </style>
 </head>
 <body>
 
-<canvas id="starsCanvas"></canvas>
+<canvas id="bgCanvas"></canvas>
 <div id="wipe"></div>
 
-<!-- ════════════════════════════════════════
-     SCREEN 1  —  RIBBON CUT
-════════════════════════════════════════════ -->
-<div class="screen active" id="s1">
-
+<!-- ════════════════════════════════
+     SCREEN 1  ·  RIBBON CUT
+════════════════════════════════════ -->
+<div class="screen on" id="s1">
   <h1 class="s1-title">Happy Birthday</h1>
 
-  <div class="ribbon-stage" id="ribbonStage">
-    <div class="ribbon-piece left"  id="rL"></div>
-    <div class="ribbon-piece right" id="rR"></div>
+  <div class="ribbon-stage" id="stage" onclick="snipRibbon()">
 
-    <!-- SCISSORS — tap target -->
-    <div class="scissors-btn" id="scBtn" onclick="snipRibbon()">
-      <svg class="sc-svg" viewBox="0 0 170 110">
-        <!-- translate coordinate origin to pivot (85,55) -->
-        <g transform="translate(85,55)">
+    <svg id="ribbonSvg" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <!-- Ribbon gradient – top-to-bottom shine -->
+        <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#f0abfc"/>
+          <stop offset="30%"  stop-color="#c084fc"/>
+          <stop offset="65%"  stop-color="#9333ea"/>
+          <stop offset="100%" stop-color="#c084fc"/>
+        </linearGradient>
+        <!-- Knot radial gradient -->
+        <radialGradient id="kg" cx="40%" cy="35%">
+          <stop offset="0%"   stop-color="#f0abfc"/>
+          <stop offset="60%"  stop-color="#a855f7"/>
+          <stop offset="100%" stop-color="#6d28d9"/>
+        </radialGradient>
+        <!-- Soft glow filter -->
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="softglow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
 
+      <!-- ─── LEFT PIECE (ribbon tail + left bow loop) ─── -->
+      <g id="gLeft">
+        <!-- Left ribbon tail – wavy path -->
+        <path d="M 0,105 C 60,98 160,112 280,100 C 380,90 440,96 476,97"
+              fill="none" stroke="url(#lg)" stroke-width="16"
+              stroke-linecap="round" filter="url(#glow)" opacity=".9"/>
+        <!-- Ribbon shine highlight -->
+        <path d="M 0,99 C 60,92 160,106 280,94 C 380,84 440,90 476,91"
+              fill="none" stroke="rgba(255,255,255,.22)" stroke-width="5"
+              stroke-linecap="round"/>
+        <!-- Left bow loop (closed filled petal) -->
+        <path d="M 497,96
+                 C 486,72 455,40 430,52
+                 C 410,64 428,92 466,94
+                 C 480,94.5 490,95 497,96 Z"
+              fill="url(#lg)" opacity=".88" filter="url(#glow)"/>
+        <!-- Left loop inner fold highlight -->
+        <path d="M 494,94 C 480,74 452,48 437,57 C 426,64 436,84 460,91"
+              fill="none" stroke="rgba(255,255,255,.38)" stroke-width="3.5"
+              stroke-linecap="round"/>
+      </g>
+
+      <!-- ─── RIGHT PIECE (ribbon tail + right bow loop) ─── -->
+      <g id="gRight">
+        <!-- Right ribbon tail -->
+        <path d="M 524,97 C 560,96 620,90 720,100 C 820,110 920,98 1000,105"
+              fill="none" stroke="url(#lg)" stroke-width="16"
+              stroke-linecap="round" filter="url(#glow)" opacity=".9"/>
+        <!-- Ribbon shine highlight -->
+        <path d="M 524,91 C 560,90 620,84 720,94 C 820,104 920,92 1000,99"
+              fill="none" stroke="rgba(255,255,255,.22)" stroke-width="5"
+              stroke-linecap="round"/>
+        <!-- Right bow loop (mirror of left) -->
+        <path d="M 503,96
+                 C 514,72 545,40 570,52
+                 C 590,64 572,92 534,94
+                 C 520,94.5 510,95 503,96 Z"
+              fill="url(#lg)" opacity=".88" filter="url(#glow)"/>
+        <!-- Right loop inner fold highlight -->
+        <path d="M 506,94 C 520,74 548,48 563,57 C 574,64 564,84 540,91"
+              fill="none" stroke="rgba(255,255,255,.38)" stroke-width="3.5"
+              stroke-linecap="round"/>
+      </g>
+
+      <!-- ─── CENTER PIECE (knot + hanging tails) ─── -->
+      <g id="gCenter">
+        <!-- Hanging tail left -->
+        <path d="M 492,100 C 486,120 480,148 486,168"
+              fill="none" stroke="url(#lg)" stroke-width="14"
+              stroke-linecap="round" opacity=".9"/>
+        <!-- Hanging tail right -->
+        <path d="M 508,100 C 514,120 520,148 514,168"
+              fill="none" stroke="url(#lg)" stroke-width="14"
+              stroke-linecap="round" opacity=".9"/>
+        <!-- Tail shine -->
+        <path d="M 490,100 C 484,120 478,148 484,168"
+              fill="none" stroke="rgba(255,255,255,.18)" stroke-width="4"
+              stroke-linecap="round"/>
+        <!-- Center knot (radial gradient sphere) -->
+        <ellipse cx="500" cy="96" rx="26" ry="22"
+                 fill="url(#kg)" filter="url(#glow)"/>
+        <!-- Knot sheen -->
+        <ellipse cx="493" cy="89" rx="10" ry="7"
+                 fill="rgba(255,255,255,.45)" transform="rotate(-20,493,89)"/>
+        <!-- Knot outline subtle -->
+        <ellipse cx="500" cy="96" rx="26" ry="22"
+                 fill="none" stroke="rgba(240,171,252,.5)" stroke-width="1.5"/>
+      </g>
+    </svg>
+
+    <!-- ─── SCISSORS ─── -->
+    <div class="sc-ring"></div>
+    <div class="sc-wrap" id="scWrap">
+      <svg class="sc-svg" viewBox="0 0 130 85">
+        <!-- Pivot translated to (65, 42) in viewBox coords -->
+        <g transform="translate(65,42)">
           <!-- TOP BLADE -->
-          <g id="bTop">
-            <!-- handle ring -->
-            <circle cx="-62" cy="-28" r="20" fill="none" stroke="#f0abfc" stroke-width="4"/>
-            <circle cx="-62" cy="-28" r="11" fill="#6d28d9" opacity=".85"/>
-            <circle cx="-62" cy="-28" r="5"  fill="#c084fc" opacity=".6"/>
-            <!-- stem -->
-            <line x1="-43" y1="-20" x2="0" y2="0" stroke="#ddd6fe" stroke-width="6" stroke-linecap="round"/>
-            <!-- blade -->
-            <path d="M0,0 Q42,-4 80,-8 Q42,0 0,4 Z" fill="#c4b5fd"/>
-            <path d="M0,0 Q42,-4 80,-8" fill="none" stroke="#e879f9" stroke-width="1.2" opacity=".6"/>
+          <g id="bT">
+            <!-- Handle ring -->
+            <circle cx="-46" cy="-22" r="17" fill="none" stroke="#f0abfc" stroke-width="3.5"/>
+            <circle cx="-46" cy="-22" r="9"  fill="#6d28d9" opacity=".9"/>
+            <circle cx="-49" cy="-25" r="3.5" fill="rgba(255,255,255,.6)"/>
+            <!-- Stem -->
+            <line x1="-30" y1="-15" x2="0" y2="0"
+                  stroke="#ddd6fe" stroke-width="5" stroke-linecap="round"/>
+            <!-- Blade -->
+            <path d="M 0,0 Q 35,-4 62,-7 Q 35,0 0,3 Z"
+                  fill="#c4b5fd"/>
+            <path d="M 2,-1 Q 36,-5 63,-8"
+                  fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/>
           </g>
-
           <!-- BOTTOM BLADE -->
-          <g id="bBot">
-            <!-- handle ring -->
-            <circle cx="-62" cy="28" r="20" fill="none" stroke="#f0abfc" stroke-width="4"/>
-            <circle cx="-62" cy="28" r="11" fill="#6d28d9" opacity=".85"/>
-            <circle cx="-62" cy="28" r="5"  fill="#c084fc" opacity=".6"/>
-            <!-- stem -->
-            <line x1="-43" y1="20" x2="0" y2="0" stroke="#ddd6fe" stroke-width="6" stroke-linecap="round"/>
-            <!-- blade -->
-            <path d="M0,0 Q42,4 80,8 Q42,0 0,-4 Z" fill="#c4b5fd"/>
-            <path d="M0,0 Q42,4 80,8" fill="none" stroke="#e879f9" stroke-width="1.2" opacity=".6"/>
+          <g id="bB">
+            <!-- Handle ring -->
+            <circle cx="-46" cy="22" r="17" fill="none" stroke="#f0abfc" stroke-width="3.5"/>
+            <circle cx="-46" cy="22" r="9"  fill="#6d28d9" opacity=".9"/>
+            <circle cx="-49" cy="19" r="3.5" fill="rgba(255,255,255,.6)"/>
+            <!-- Stem -->
+            <line x1="-30" y1="15" x2="0" y2="0"
+                  stroke="#ddd6fe" stroke-width="5" stroke-linecap="round"/>
+            <!-- Blade -->
+            <path d="M 0,0 Q 35,4 62,7 Q 35,0 0,-3 Z"
+                  fill="#c4b5fd"/>
+            <path d="M 2,1 Q 36,5 63,8"
+                  fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/>
           </g>
-
-          <!-- screw / pivot -->
-          <circle r="8" fill="#8b5cf6" stroke="#f0abfc" stroke-width="2.5"/>
-          <circle r="3.5" fill="#c4b5fd"/>
+          <!-- Pivot screw -->
+          <circle r="7.5" fill="#8b5cf6" stroke="#f0abfc" stroke-width="2"/>
+          <circle r="3" fill="#ddd6fe" opacity=".8"/>
         </g>
       </svg>
     </div>
 
-    <!-- sparkle container -->
-    <div id="sparkBox" style="position:absolute;inset:0;pointer-events:none;z-index:40;overflow:visible"></div>
+    <!-- Sparkles container -->
+    <div id="sparkBox" style="position:absolute;inset:0;overflow:visible;pointer-events:none;z-index:50"></div>
   </div>
 
-  <p class="s1-hint">✂️ Tap the ribbon to open your surprise!</p>
+  <p class="s1-hint">✂️ Tap to cut the ribbon &amp; open your gift</p>
 </div>
 
-<!-- ════════════════════════════════════════
-     SCREEN 2  —  BIRTHDAY CELEBRATION
-════════════════════════════════════════════ -->
+<!-- ════════════════════════════════
+     SCREEN 2  ·  NAME REVEAL
+════════════════════════════════════ -->
 <div class="screen" id="s2" onclick="goToParty()">
-  <canvas id="confettiCanvas"></canvas>
-  <div class="float-wrap" id="floatWrap"></div>
+  <canvas id="auroraCanvas"></canvas>
+  <canvas id="particleCanvas"></canvas>
+  <div class="float-layer" id="floatLayer"></div>
 
   <div class="s2-inner">
-    <div class="s2-emoji" id="s2Emoji">🎂</div>
-    <h1 class="s2-hb" id="s2Title"></h1>
-    <p class="s2-wife" id="s2Wife">My Lovely Wife 💜</p>
-    <p class="s2-name"  id="s2Name">Salmana ✨</p>
-    <div class="s2-hearts-row" id="s2Hearts">💜 🌸 💜 🌸 💜</div>
-    <p class="s2-hint"  id="s2Hint">Tap anywhere to see your surprise →</p>
+    <div class="s2-heart"  id="s2Heart">💜</div>
+    <h1 class="s2-name"   id="s2Name">Salmana</h1>
+    <div class="s2-line"  id="s2Line"></div>
+    <p  class="s2-wife"   id="s2Wife">My Lovely Wife</p>
+    <p  class="s2-hint"   id="s2Hint">Tap anywhere to continue</p>
   </div>
 </div>
 
@@ -397,84 +495,85 @@ body{
 function $(id){return document.getElementById(id)}
 function lsGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}}
 
-/* ═══ TWINKLING STARS ═══ */
+/* ═══ TWINKLING STARS (bg canvas, shared) ═══ */
 (function(){
-  const cv=$('starsCanvas'),ctx=cv.getContext('2d');
+  const cv=$('bgCanvas'), ctx=cv.getContext('2d');
   let stars=[];
   function resize(){
-    cv.width=innerWidth;cv.height=innerHeight;
-    stars=Array.from({length:200},()=>({
+    cv.width=innerWidth; cv.height=innerHeight;
+    stars=Array.from({length:220},()=>({
       x:Math.random()*cv.width, y:Math.random()*cv.height,
-      r:Math.random()*1.6+.2,
+      r:Math.random()*1.6+.3,
       phase:Math.random()*Math.PI*2,
-      speed:.003+Math.random()*.008
+      spd:.003+Math.random()*.009
     }));
   }
-  resize();
-  addEventListener('resize',resize);
+  resize(); addEventListener('resize',resize);
   (function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
     stars.forEach(s=>{
-      s.phase+=s.speed;
-      const a=.25+.75*Math.abs(Math.sin(s.phase));
-      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(221,214,254,${a})`;ctx.fill();
+      s.phase+=s.spd;
+      const a=.2+.8*Math.abs(Math.sin(s.phase));
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(221,214,254,${a})`; ctx.fill();
     });
     requestAnimationFrame(draw);
   })();
 })();
 
-/* ═══ RIBBON SNIP ═══ */
-let snipped=false;
+/* ═══════════════════════════
+   RIBBON SNIP LOGIC
+════════════════════════════ */
+let cutting=false;
+
 function snipRibbon(){
-  if(snipped) return;
-  snipped=true;
-  const sc=$('scBtn');
-  const rL=$('rL'), rR=$('rR');
+  if(cutting) return;
+  cutting=true;
+  const sc=$('scWrap');
 
-  // Phase 1 — scissors start closing
+  // 1. Scissors snap shut
   sc.classList.add('cutting');
+  setTimeout(()=>{ sc.classList.remove('cutting'); sc.classList.add('snipped'); }, 140);
 
-  // Phase 2 — scissors fully closed (snip!)
-  setTimeout(()=>{
-    sc.classList.remove('cutting');
-    sc.classList.add('snipped');
-    burstSparks();
-  },140);
+  // 2. Burst sparkles
+  setTimeout(burstSparks, 180);
 
-  // Phase 3 — ribbon falls
+  // 3. Ribbon pieces fall
   setTimeout(()=>{
-    rL.classList.add('falling');
-    rR.classList.add('falling');
-    // scissors fade
-    sc.style.transition='opacity .35s, transform .35s';
+    $('gLeft').classList.add('fall');
+    $('gRight').classList.add('fall');
+    $('gCenter').classList.add('fall');
+    // Scissors fade out
+    sc.style.transition='opacity .4s ease-out,transform .4s ease-out';
     sc.style.opacity='0';
-    sc.style.transform='translate(-50%,-50%) scale(.4)';
-  },320);
+    sc.style.transform='translate(-50%,-50%) scale(.3)';
+    document.querySelector('.sc-ring').style.display='none';
+  }, 310);
 
-  // Phase 4 — wipe to screen 2
-  setTimeout(transTo2, 1150);
+  // 4. Wipe to Screen 2
+  setTimeout(transTo2, 1200);
 }
 
 function burstSparks(){
   const box=$('sparkBox');
-  const glyphs=['✨','💜','⭐','✦','🌟','💫','🎀','★','✦','✨','💜','⭐'];
+  const glyphs=['✨','💜','⭐','✦','🌟','💫','🌸','✦','💜','✨','⭐','✦'];
   const dirs=[
-    [-70,-90],[70,-90],[-110,-50],[110,-50],[-90,-120],[90,-120],
-    [0,-130],[-130,-20],[130,-20],[-50,-140],[50,-140],[0,-150]
+    [-75,-95],[75,-95],[-115,-55],[115,-55],
+    [-95,-125],[95,-125],[0,-135],
+    [-140,-25],[140,-25],[-55,-150],[55,-150],[0,-155]
   ];
   dirs.forEach(([tx,ty],i)=>{
     const sp=document.createElement('div');
     sp.className='spark';
     sp.textContent=glyphs[i];
-    sp.style.setProperty('--tx', tx+'px');
-    sp.style.setProperty('--ty', ty+'px');
-    sp.style.setProperty('--tx2',(tx*1.9)+'px');
-    sp.style.setProperty('--ty2',(ty*1.9)+'px');
-    sp.style.animationDelay=(i*25)+'ms';
+    sp.style.setProperty('--tx',tx+'px');
+    sp.style.setProperty('--ty',ty+'px');
+    sp.style.setProperty('--tx2',(tx*2.1)+'px');
+    sp.style.setProperty('--ty2',(ty*2.1)+'px');
+    sp.style.animationDelay=(i*20)+'ms';
     box.appendChild(sp);
-    setTimeout(()=>sp.classList.add('go'),10);
-    setTimeout(()=>sp.remove(),1200);
+    requestAnimationFrame(()=>sp.classList.add('go'));
+    setTimeout(()=>sp.remove(),1300);
   });
 }
 
@@ -483,109 +582,106 @@ function transTo2(){
   const w=$('wipe');
   w.classList.add('in');
   setTimeout(()=>{
-    $('s1').classList.remove('active');
-    $('s2').classList.add('active');
-    animateS2();
-    setTimeout(()=>w.classList.add('out'),100);
-  },450);
+    $('s1').classList.remove('on');
+    $('s2').classList.add('on');
+    launchS2();
+    setTimeout(()=>{ w.classList.add('out'); },80);
+  },500);
 }
 
-/* ═══ SCREEN 2 ANIMATION ═══ */
-function animateS2(){
-  const name = lsGet('bd_name')||'Salmana';
-  $('s2Name').textContent = name+' ✨';
+/* ═══════════════════════════
+   SCREEN 2  ·  CINEMATIC REVEAL
+════════════════════════════ */
+function launchS2(){
+  // Pull name from localStorage (admin panel)
+  const name = lsGet('bd_name') || 'Salmana';
+  $('s2Name').textContent = name;
 
-  // Build "Happy Birthday" with animated letters
-  const txt='Happy Birthday';
-  $('s2Title').innerHTML=[...txt].map((ch,i)=>
-    ch===' '
-      ? '<span style="display:inline-block;width:.28em"> </span>'
-      : `<span class="lt" style="transition-delay:${i*55}ms">${ch}</span>`
-  ).join('');
-
-  // Emoji pop
-  setTimeout(()=>$('s2Emoji').classList.add('show'),150);
-
-  // Letters in
-  setTimeout(()=>{
-    $('s2Title').querySelectorAll('.lt').forEach(el=>el.classList.add('in'));
-  },200);
-
-  // Wife text
-  setTimeout(()=>$('s2Wife').classList.add('in'),900);
-
-  // Name
-  setTimeout(()=>$('s2Name').classList.add('in'),1350);
-
-  // Hearts row
-  setTimeout(()=>$('s2Hearts').classList.add('in'),1750);
-
-  // Hint
-  setTimeout(()=>$('s2Hint').classList.add('in'),2200);
-
-  // Start confetti + floaty hearts
-  startConfetti();
+  // Start aurora + particles
+  startAurora();
+  startParticles();
   spawnFloatHearts();
+
+  // Staggered reveals
+  delay(200,  ()=>$('s2Heart').classList.add('in'));
+  delay(900,  ()=>$('s2Name').classList.add('in'));
+  delay(2100, ()=>$('s2Line').classList.add('in'));
+  delay(2400, ()=>$('s2Wife').classList.add('in'));
+  delay(3400, ()=>$('s2Hint').classList.add('in'));
 }
+function delay(ms,fn){setTimeout(fn,ms)}
 
-/* ═══ CONFETTI ═══ */
-let confettiOn=false;
-function startConfetti(){
-  const cv=$('confettiCanvas');
-  const ctx=cv.getContext('2d');
-  confettiOn=true;
-  function resize(){cv.width=innerWidth;cv.height=innerHeight}
-  resize();addEventListener('resize',resize);
-
-  const cols=['#8b5cf6','#c084fc','#e879f9','#f9a8d4','#fde68a','#ffffff','#a78bfa','#ddd6fe','#f0abfc','#93c5fd'];
-  let pieces=[];
-
-  function spawn(n){
-    for(let i=0;i<n;i++){
-      const c=cols[Math.floor(Math.random()*cols.length)];
-      pieces.push({
-        x:Math.random()*cv.width, y:-30-Math.random()*cv.height*.4,
-        w:5+Math.random()*9, h:3+Math.random()*5,
-        rot:Math.random()*360, rSpd:(Math.random()-.5)*10,
-        vx:(Math.random()-.5)*2.5, vy:1.8+Math.random()*3.2,
-        col:c, circle:Math.random()<.25
-      });
-    }
-  }
-  spawn(140);
-  const iv=setInterval(()=>{if(pieces.length<160)spawn(25)},1800);
-
+/* ─── AURORA canvas ─── */
+function startAurora(){
+  const cv=$('auroraCanvas'), ctx=cv.getContext('2d');
+  function resize(){ cv.width=innerWidth; cv.height=innerHeight; }
+  resize(); addEventListener('resize',resize);
+  let t=0;
   (function frame(){
     ctx.clearRect(0,0,cv.width,cv.height);
-    pieces=pieces.filter(p=>p.y<cv.height+40);
-    pieces.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.rot+=p.rSpd;
-      ctx.save();
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.rot*Math.PI/180);
-      ctx.fillStyle=p.col;
-      if(p.circle){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill();}
-      else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.restore();
+    const cx=cv.width/2, cy=cv.height/2;
+    // Slow drifting glow blobs
+    const blobs=[
+      {ox:.18*Math.sin(t*.22), oy:.12*Math.cos(t*.18), r:.7, c:'rgba(109,40,217,.22)'},
+      {ox:.15*Math.cos(t*.17), oy:.18*Math.sin(t*.14), r:.55,'c':'rgba(192,38,211,.18)'},
+      {ox:.10*Math.sin(t*.3+1),oy:.10*Math.cos(t*.25), r:.42,'c':'rgba(76,29,149,.25)'},
+    ];
+    blobs.forEach(b=>{
+      const gx=cx+b.ox*cv.width, gy=cy+b.oy*cv.height;
+      const rr=Math.min(cv.width,cv.height)*b.r;
+      const g=ctx.createRadialGradient(gx,gy,0,gx,gy,rr);
+      g.addColorStop(0,b.c); g.addColorStop(1,'transparent');
+      ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
     });
-    if(confettiOn) requestAnimationFrame(frame);
-    else clearInterval(iv);
+    t+=.016;
+    requestAnimationFrame(frame);
   })();
 }
 
-/* ═══ FLOATING HEARTS ═══ */
+/* ─── PARTICLE canvas ─── */
+function startParticles(){
+  const cv=$('particleCanvas'), ctx=cv.getContext('2d');
+  function resize(){ cv.width=innerWidth; cv.height=innerHeight; }
+  resize(); addEventListener('resize',resize);
+  const cols=['rgba(192,132,252,.7)','rgba(240,171,252,.6)','rgba(249,168,212,.5)','rgba(255,255,255,.5)'];
+  let pts=Array.from({length:60},()=>mkPt(cv));
+  function mkPt(cv){
+    return {
+      x:Math.random()*cv.width, y:Math.random()*cv.height,
+      r:1+Math.random()*2.5,
+      vx:(Math.random()-.5)*.4, vy:-.3-Math.random()*.8,
+      col:cols[Math.floor(Math.random()*cols.length)],
+      life:Math.random()
+    };
+  }
+  (function frame(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pts.forEach((p,i)=>{
+      p.x+=p.vx; p.y+=p.vy; p.life+=.004;
+      if(p.y<-10) pts[i]=mkPt(cv);
+      const a=Math.sin(p.life*Math.PI)*0.8;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.col.replace('.7',String(a.toFixed(2))).replace('.6',String(a.toFixed(2)))
+                        .replace('.5',String(a.toFixed(2)));
+      ctx.fill();
+    });
+    requestAnimationFrame(frame);
+  })();
+}
+
+/* ─── FLOATING HEARTS ─── */
 function spawnFloatHearts(){
-  const wrap=$('floatWrap');
-  const g=['💜','✦','🌸','💫','✨','⭐','🎀','✦','💜'];
-  for(let i=0;i<20;i++){
+  const wrap=$('floatLayer');
+  const g=['💜','✦','🌸','💫','✨','⭐'];
+  for(let i=0;i<22;i++){
     const h=document.createElement('div');
     h.className='fh';
     h.textContent=g[i%g.length];
     h.style.cssText=`
       left:${Math.random()*100}%;
-      font-size:${10+Math.random()*20}px;
-      animation-delay:${Math.random()*16}s;
-      animation-duration:${9+Math.random()*9}s;
+      font-size:${9+Math.random()*16}px;
+      animation-delay:${Math.random()*18}s;
+      animation-duration:${10+Math.random()*10}s;
     `;
     wrap.appendChild(h);
   }
@@ -593,18 +689,16 @@ function spawnFloatHearts(){
 
 /* ═══ GO TO PARTY PAGE ═══ */
 function goToParty(){
-  confettiOn=false;
   const w=$('wipe');
-  w.style.transition='transform .4s cubic-bezier(.76,0,.24,1)';
-  w.classList.remove('out');
-  w.classList.add('in');
-  setTimeout(()=>{ window.location.href='party.html'; },420);
+  w.style.transition='transform .45s cubic-bezier(.76,0,.24,1)';
+  w.classList.remove('out'); w.classList.add('in');
+  setTimeout(()=>{ window.location.href='party.html'; },460);
 }
 
-/* ═══ REDUCED MOTION ═══ */
+/* Reduced motion */
 if(matchMedia('(prefers-reduced-motion:reduce)').matches){
-  document.querySelectorAll('[class*="animate"],[style*="animation"]').forEach(el=>{
-    el.style.animationPlayState='paused';
+  document.querySelectorAll('[class*="animate"],[style*="animation"]').forEach(e=>{
+    e.style.animationPlayState='paused';
   });
 }
 </script>
