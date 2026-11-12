@@ -2,369 +2,467 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Birthday Editor 💜</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Caveat:wght@600;700&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Birthday Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
-:root{
-  --bg:#1a0a2e;
-  --card:#2d1458;
-  --card2:#3b1872;
-  --border:#5b21b6;
-  --accent:#8b5cf6;
-  --accent2:#a78bfa;
-  --fg:#ede9fe;
-  --fg2:#c4b5fd;
-  --fg3:#7c3aed;
-  --input-bg:#140824;
-  --danger:#ef4444;
-  --success:#22c55e;
-  --radius:12px;
-  --ff:'Nunito',system-ui,sans-serif;
-  --ff-hand:'Caveat',cursive;
-}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:var(--ff);
-  background:var(--bg);color:var(--fg);
-  min-height:100vh;
-  padding:0;
-  overflow-x:hidden;
-}
-img{max-width:100%}
+html,body{height:100%;overflow:hidden;background:#0d0520}
 
-/* ── LOGIN ── */
-#loginScreen{
-  min-height:100vh;
+:root{
+  --bg:#0d0520;--panel:#130826;--card:#1c1035;--border:rgba(167,139,250,.18);
+  --p1:#3B0764;--p2:#6D28D9;--p3:#8B5CF6;--p4:#C4B5FD;--p5:#EDE9FE;
+  --accent:#8B5CF6;--green:#22c55e;--red:#ef4444;
+  --text:#E9D5FF;--text-soft:rgba(233,213,255,.55);--text-dim:rgba(233,213,255,.35);
+  --ff:'Nunito',system-ui,sans-serif;
+}
+
+/* ══ LAYOUT ══ */
+#gate{
+  position:fixed;inset:0;background:var(--bg);
   display:flex;align-items:center;justify-content:center;
-  padding:24px;
-  background:radial-gradient(ellipse at 50% 0%,#3b1872 0%,#1a0a2e 70%);
+  z-index:999;
 }
-.login-box{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:20px;padding:40px 32px;
-  width:100%;max-width:380px;
-  box-shadow:0 20px 60px rgba(0,0,0,.5);
-  text-align:center;
+.gate-box{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:36px 32px;text-align:center;
+  box-shadow:0 0 60px rgba(139,92,246,.2);
+  width:min(360px,90vw);
 }
-.login-icon{font-size:52px;margin-bottom:16px}
-.login-title{
-  font-family:var(--ff-hand);font-size:2rem;font-weight:700;
-  color:var(--accent2);margin-bottom:8px;
-}
-.login-sub{font-size:.9rem;color:var(--fg2);margin-bottom:28px}
-.login-box input{
-  width:100%;padding:13px 16px;
-  background:var(--input-bg);border:2px solid var(--border);
-  border-radius:10px;color:var(--fg);font-family:var(--ff);font-size:1rem;
-  margin-bottom:14px;outline:none;
+.gate-box h2{font-family:'Caveat',cursive;font-size:2rem;color:var(--p4);margin-bottom:6px}
+.gate-box p{font-size:.85rem;color:var(--text-soft);margin-bottom:24px}
+.gate-input{
+  width:100%;padding:11px 14px;border-radius:10px;
+  background:rgba(255,255,255,.07);border:1.5px solid var(--border);
+  color:var(--text);font-family:var(--ff);font-size:1rem;
+  outline:none;text-align:center;letter-spacing:3px;
   transition:border-color .2s;
 }
-.login-box input:focus{border-color:var(--accent)}
-.btn-login{
-  width:100%;padding:13px;
-  background:linear-gradient(135deg,var(--fg3),var(--accent));
-  color:#fff;border:none;border-radius:10px;
-  font-family:var(--ff);font-size:1rem;font-weight:800;
-  cursor:pointer;transition:opacity .2s,transform .2s;
+.gate-input:focus{border-color:var(--p3)}
+.gate-btn{
+  margin-top:14px;width:100%;padding:12px;border:none;border-radius:10px;
+  background:var(--p2);color:#fff;font-family:var(--ff);font-size:1rem;font-weight:800;
+  cursor:pointer;transition:background .2s,transform .15s;
 }
-.btn-login:hover{opacity:.9;transform:translateY(-1px)}
-.login-err{color:#f87171;font-size:.85rem;margin-top:10px;min-height:20px}
+.gate-btn:hover{background:var(--p3);transform:translateY(-2px)}
+.gate-err{margin-top:10px;color:var(--red);font-size:.85rem;min-height:1.2em}
 
-/* ── ADMIN SHELL ── */
-#adminShell{display:none}
+/* ── MAIN APP ── */
+#app{
+  display:flex;height:100vh;width:100vw;overflow:hidden;
+}
+#app.hidden{display:none}
 
-.top-bar{
-  background:var(--card);border-bottom:1px solid var(--border);
-  padding:14px max(20px,env(safe-area-inset-left,20px));
+/* LEFT PANEL */
+.left{
+  width:340px;flex-shrink:0;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:transform .3s;
+}
+.left-head{
+  padding:14px 16px;
   display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:10px;
-  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
 }
-.top-bar-title{
-  font-family:var(--ff-hand);font-size:1.5rem;font-weight:700;color:var(--accent2);
+.left-head .logo{
+  font-family:'Caveat',cursive;font-size:1.3rem;color:var(--p4);
+  display:flex;align-items:center;gap:8px;
 }
-.bar-actions{display:flex;gap:10px;flex-wrap:wrap}
-
+.head-actions{display:flex;gap:8px}
 .btn{
-  padding:9px 18px;border-radius:8px;border:none;
-  font-family:var(--ff);font-size:.88rem;font-weight:700;
-  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;
-  text-decoration:none;
+  padding:8px 14px;border:none;border-radius:8px;
+  font-family:var(--ff);font-size:.82rem;font-weight:800;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:5px;
 }
-.btn-save{background:var(--success);color:#fff}
-.btn-save:hover{background:#16a34a}
-.btn-preview{background:var(--card2);color:var(--fg2);border:1px solid var(--border)}
-.btn-preview:hover{background:var(--border);color:#fff}
-.btn-logout{background:transparent;color:var(--fg2);border:1px solid var(--border)}
-.btn-logout:hover{color:var(--danger);border-color:var(--danger)}
-.btn-sm{padding:6px 12px;font-size:.8rem}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-add{background:var(--card2);color:var(--accent2);border:1px solid var(--border)}
-.btn-add:hover{background:var(--border)}
+.btn-save{background:var(--green);color:#fff}
+.btn-save:hover{background:#16a34a;transform:translateY(-1px)}
+.btn-save.saving{background:var(--p2);cursor:default}
+.btn-logout{background:rgba(255,255,255,.08);color:var(--text-soft);font-size:.78rem}
+.btn-logout:hover{background:rgba(255,255,255,.14)}
 
-/* toast */
-.toast{
-  position:fixed;bottom:max(24px,env(safe-area-inset-bottom,24px));left:50%;
-  transform:translateX(-50%) translateY(80px);
-  background:var(--success);color:#fff;
-  padding:12px 24px;border-radius:50px;
-  font-weight:700;font-size:.9rem;
-  box-shadow:0 8px 24px rgba(0,0,0,.4);
-  z-index:999;transition:transform .3s;pointer-events:none;
-}
-.toast.show{transform:translateX(-50%) translateY(0)}
-
-/* ── CONTENT ── */
-.content{
-  max-width:860px;margin:0 auto;
-  padding:28px max(20px,env(safe-area-inset-left,20px)) 80px;
-  display:flex;flex-direction:column;gap:28px;
-}
+.sections-scroll{flex:1;overflow-y:auto;padding:12px}
+.sections-scroll::-webkit-scrollbar{width:4px}
+.sections-scroll::-webkit-scrollbar-track{background:transparent}
+.sections-scroll::-webkit-scrollbar-thumb{background:rgba(139,92,246,.3);border-radius:4px}
 
 /* ── SECTION CARD ── */
-.card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);overflow:hidden;
+.sec{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:12px;margin-bottom:10px;overflow:hidden;
+  transition:border-color .2s;
 }
-.card-head{
-  padding:14px 20px;
-  background:var(--card2);
-  display:flex;align-items:center;gap:10px;
-  border-bottom:1px solid var(--border);
+.sec.active{border-color:var(--p3)}
+.sec-head{
+  padding:13px 15px;display:flex;align-items:center;gap:10px;
+  cursor:pointer;user-select:none;
 }
-.card-head h2{font-size:1rem;font-weight:800;color:var(--accent2)}
-.card-head .icon{font-size:1.1rem}
-.card-body{padding:20px}
+.sec-head:hover{background:rgba(139,92,246,.07)}
+.sec-icon{font-size:1.1rem;width:24px;text-align:center}
+.sec-title{flex:1;font-weight:700;font-size:.9rem;color:var(--text)}
+.sec-arrow{
+  color:var(--text-dim);font-size:.75rem;
+  transition:transform .25s;
+}
+.sec.open .sec-arrow{transform:rotate(180deg)}
+.sec-body{
+  display:none;padding:4px 15px 15px;border-top:1px solid var(--border);
+}
+.sec.open .sec-body{display:block}
 
-/* ── FIELD ── */
-.field{margin-bottom:16px}
-.field:last-child{margin-bottom:0}
-.field label{
-  display:block;font-size:.8rem;font-weight:700;
-  color:var(--fg2);margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase;
+/* ── FORM ELEMENTS ── */
+label{
+  display:block;font-size:.75rem;font-weight:700;
+  color:var(--text-soft);letter-spacing:.06em;text-transform:uppercase;
+  margin-top:12px;margin-bottom:5px;
 }
-.field input[type=text],
-.field textarea,
-.field input[type=password]{
-  width:100%;padding:11px 14px;
-  background:var(--input-bg);border:1.5px solid var(--border);
-  border-radius:8px;color:var(--fg);font-family:var(--ff);font-size:.95rem;
-  outline:none;transition:border-color .2s;resize:vertical;
+.inp,.ta{
+  width:100%;padding:9px 11px;
+  background:rgba(255,255,255,.06);border:1.5px solid var(--border);
+  color:var(--text);font-family:var(--ff);font-size:.88rem;
+  border-radius:8px;outline:none;transition:border-color .2s;
 }
-.field input[type=text]:focus,
-.field textarea:focus,
-.field input[type=password]:focus{border-color:var(--accent)}
+.inp:focus,.ta:focus{border-color:var(--p3);background:rgba(139,92,246,.08)}
+.ta{resize:vertical;min-height:70px;line-height:1.5}
 
-/* ── PHOTOS ── */
-.photos-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
-  gap:16px;
+/* toggle switch */
+.toggle-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;
+}
+.toggle-label{font-size:.88rem;color:var(--text);font-weight:600}
+.toggle-label small{display:block;font-size:.75rem;color:var(--text-soft);font-weight:400;margin-top:2px}
+.toggle{position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{
+  position:absolute;inset:0;border-radius:12px;
+  background:rgba(255,255,255,.12);transition:background .2s;
+}
+.toggle input:checked~.toggle-track{background:var(--p3)}
+.toggle-thumb{
+  position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:transform .2s;
+  box-shadow:0 1px 4px rgba(0,0,0,.3);
+}
+.toggle input:checked~.toggle-track~.toggle-thumb{transform:translateX(20px)}
+
+/* photo grid */
+.photo-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;
 }
 .photo-slot{
-  background:var(--input-bg);border:2px dashed var(--border);
-  border-radius:10px;overflow:hidden;position:relative;
-  aspect-ratio:1;cursor:pointer;
-  transition:border-color .2s;
-}
-.photo-slot:hover{border-color:var(--accent)}
-.photo-slot img{
-  width:100%;height:100%;object-fit:cover;display:block;
-}
-.photo-slot .ph-overlay{
-  position:absolute;inset:0;
+  aspect-ratio:1;border-radius:8px;overflow:hidden;
+  background:rgba(255,255,255,.05);border:1.5px dashed rgba(139,92,246,.3);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:8px;color:var(--fg2);pointer-events:none;
+  gap:5px;cursor:pointer;position:relative;
+  transition:border-color .2s,background .2s;
 }
-.photo-slot .ph-overlay svg{width:32px;height:32px;opacity:.5}
-.photo-slot .ph-overlay span{font-size:.8rem;opacity:.7}
-.photo-slot .ph-remove{
-  position:absolute;top:6px;right:6px;
-  background:var(--danger);color:#fff;border:none;border-radius:50%;
-  width:24px;height:24px;cursor:pointer;font-size:.8rem;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:opacity .2s;
+.photo-slot:hover{border-color:var(--p3);background:rgba(139,92,246,.1)}
+.photo-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo-slot .ps-icon{color:var(--text-dim);font-size:1.3rem;z-index:1}
+.photo-slot .ps-label{font-size:.7rem;color:var(--text-dim);z-index:1}
+.photo-slot input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.photo-slot .ps-rm{
+  position:absolute;top:4px;right:4px;width:20px;height:20px;
+  background:rgba(239,68,68,.8);border:none;border-radius:50%;
+  color:#fff;font-size:.7rem;cursor:pointer;z-index:2;
+  display:none;align-items:center;justify-content:center;
 }
-.photo-slot:hover .ph-remove{opacity:1}
-.photo-slot input[type=file]{
-  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+.photo-slot:hover .ps-rm{display:flex}
+.cap-inp{
+  width:100%;margin-top:3px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  color:var(--text);font-family:'Caveat',cursive;font-size:.9rem;
+  padding:4px 8px;border-radius:5px;outline:none;text-align:center;
 }
+.cap-inp:focus{border-color:var(--p3)}
 
-/* caption inputs below each photo */
-.photo-caption-input{
-  margin-top:6px;
-  width:100%;padding:7px 10px;
-  background:var(--input-bg);border:1.5px solid var(--border);
-  border-radius:6px;color:var(--fg);font-family:var(--ff);font-size:.82rem;
-  outline:none;text-align:center;
-}
-.photo-caption-input:focus{border-color:var(--accent)}
-
-/* ── MESSAGES ── */
-.msg-list{display:flex;flex-direction:column;gap:12px}
+/* message rows */
 .msg-row{
-  background:var(--input-bg);border:1.5px solid var(--border);
-  border-radius:8px;padding:14px;
-  display:grid;grid-template-columns:1fr 110px 80px auto;
-  gap:10px;align-items:center;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:8px;padding:10px;margin-top:8px;
+  position:relative;
 }
-@media(max-width:600px){
-  .msg-row{grid-template-columns:1fr;gap:8px}
+.msg-row .ta{min-height:52px;font-family:'Caveat',cursive;font-size:1rem}
+.msg-row-opts{display:flex;gap:6px;margin-top:6px}
+.mini-select{
+  flex:1;padding:5px 7px;border-radius:6px;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  color:var(--text);font-size:.78rem;font-family:var(--ff);
+  outline:none;cursor:pointer;
 }
-.msg-row textarea{
-  background:transparent;border:none;color:var(--fg);
-  font-family:var(--ff);font-size:.9rem;resize:none;
-  outline:none;min-height:48px;
+.mini-select:focus{border-color:var(--p3)}
+.rm-btn{
+  padding:5px 9px;border-radius:6px;border:none;
+  background:rgba(239,68,68,.2);color:var(--red);
+  font-size:.8rem;cursor:pointer;
+  transition:background .2s;
 }
-.msg-row select{
-  background:var(--card2);border:1.5px solid var(--border);
-  border-radius:6px;color:var(--fg2);font-family:var(--ff);font-size:.82rem;
-  padding:7px 8px;outline:none;cursor:pointer;
+.rm-btn:hover{background:rgba(239,68,68,.35)}
+.add-btn{
+  width:100%;margin-top:8px;padding:9px;
+  border:1.5px dashed rgba(139,92,246,.3);border-radius:8px;
+  background:transparent;color:var(--p4);
+  font-family:var(--ff);font-size:.82rem;font-weight:700;
+  cursor:pointer;transition:all .2s;
 }
-.msg-row .side-select{
-  background:var(--card2);border:1.5px solid var(--border);
-  border-radius:6px;color:var(--fg2);font-family:var(--ff);font-size:.82rem;
-  padding:7px 8px;outline:none;cursor:pointer;
+.add-btn:hover{border-color:var(--p3);background:rgba(139,92,246,.08)}
+
+/* mem rows */
+.mem-row{display:flex;gap:6px;align-items:flex-start;margin-top:6px}
+.mem-row .ta{min-height:44px;font-family:'Caveat',cursive;font-size:1rem;flex:1}
+
+/* pw section */
+.pw-hint{font-size:.78rem;color:var(--text-dim);margin-top:6px}
+
+/* save toast */
+#toast{
+  position:fixed;bottom:max(20px,env(safe-area-inset-bottom,20px));
+  left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--green);color:#fff;
+  padding:9px 20px;border-radius:30px;
+  font-family:var(--ff);font-size:.88rem;font-weight:700;
+  box-shadow:0 4px 20px rgba(34,197,94,.4);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  z-index:999;white-space:nowrap;
 }
-.btn-rm{
-  background:transparent;border:1px solid var(--danger);color:var(--danger);
-  border-radius:6px;padding:6px 10px;cursor:pointer;font-size:.8rem;font-family:var(--ff);
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* RIGHT PREVIEW */
+.right{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;
+  background:#0a011a;
+}
+.preview-bar{
+  padding:9px 14px;background:var(--panel);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.preview-bar span{font-size:.78rem;color:var(--text-dim);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-right:4px}
+.prev-tab{
+  padding:5px 12px;border-radius:6px;border:1.5px solid var(--border);
+  background:transparent;color:var(--text-soft);
+  font-family:var(--ff);font-size:.8rem;font-weight:700;cursor:pointer;
   transition:all .2s;
 }
-.btn-rm:hover{background:var(--danger);color:#fff}
-
-/* ── MEMORIES ── */
-.mem-list{display:flex;flex-direction:column;gap:10px}
-.mem-row{display:flex;gap:10px;align-items:flex-start}
-.mem-row textarea{
-  flex:1;padding:11px 14px;
-  background:var(--input-bg);border:1.5px solid var(--border);
-  border-radius:8px;color:var(--fg);font-family:var(--ff);font-size:.9rem;
-  resize:vertical;outline:none;min-height:60px;
-  transition:border-color .2s;
+.prev-tab.active{background:rgba(139,92,246,.2);border-color:var(--p3);color:var(--p4)}
+.prev-tab:hover:not(.active){background:rgba(255,255,255,.05)}
+.click-hint{margin-left:auto;font-size:.73rem;color:var(--text-dim);display:flex;align-items:center;gap:5px}
+.click-hint svg{width:12px;height:12px;opacity:.5}
+#previewFrame{
+  flex:1;border:none;width:100%;
+  transform-origin:top center;
 }
-.mem-row textarea:focus{border-color:var(--accent)}
+.preview-wrapper{
+  flex:1;overflow:hidden;position:relative;
+  display:flex;flex-direction:column;
+}
 
-/* ── PASSWORD ── */
-.pw-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-.pw-row .field{flex:1;min-width:200px;margin-bottom:0}
+/* ── MOBILE TABS ── */
+@media(max-width:767px){
+  .left{
+    position:fixed;bottom:0;left:0;right:0;
+    width:100%;height:60vh;
+    transform:translateY(100%);
+    z-index:100;
+    border-top:1px solid var(--border);border-right:none;
+    border-radius:16px 16px 0 0;
+  }
+  .left.mob-open{transform:translateY(0)}
+  .right{width:100%;height:100%}
+  .mob-toggle{
+    position:fixed;bottom:max(16px,env(safe-area-inset-bottom,16px));right:16px;
+    width:52px;height:52px;border-radius:50%;
+    background:var(--p2);border:none;color:#fff;font-size:1.3rem;
+    cursor:pointer;z-index:200;
+    box-shadow:0 4px 20px rgba(109,40,217,.5);
+    display:flex;align-items:center;justify-content:center;
+  }
+}
+@media(min-width:768px){
+  .mob-toggle{display:none}
+  .mob-close-bar{display:none}
+}
+.mob-close-bar{
+  display:flex;justify-content:center;padding:8px;cursor:pointer;
+}
+.mob-close-bar div{width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px}
+
+/* click-to-edit flash */
+.sec.flash{animation:secFlash .5s ease-out}
+@keyframes secFlash{
+  0%{background:rgba(139,92,246,.25);border-color:var(--p3)}
+  100%{background:var(--card);border-color:var(--border)}
+}
+.sec.active.flash{animation:secFlashActive .5s ease-out}
+@keyframes secFlashActive{
+  0%{background:rgba(139,92,246,.3)}
+  100%{background:var(--card)}
+}
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══ -->
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-icon">💜</div>
-    <div class="login-title">Birthday Editor</div>
-    <div class="login-sub">Enter password to edit the page</div>
-    <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password">
-    <button class="btn-login" onclick="doLogin()">Unlock ✨</button>
-    <div class="login-err" id="loginErr"></div>
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <div class="gate-box">
+    <h2>🎂 Birthday Editor</h2>
+    <p>Enter your password to edit the birthday website</p>
+    <input class="gate-input" type="password" id="pwIn" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="gate-btn" onclick="checkPw()">Unlock →</button>
+    <div class="gate-err" id="gErr"></div>
   </div>
 </div>
 
-<!-- ══ ADMIN SHELL ══ -->
-<div id="adminShell">
-  <div class="top-bar">
-    <div class="top-bar-title">🎂 Birthday Editor</div>
-    <div class="bar-actions">
-      <button class="btn btn-save" onclick="saveAll()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
-        Save All
-      </button>
-      <a href="party.html" target="_blank" class="btn btn-preview">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        Preview
-      </a>
-      <button class="btn btn-logout" onclick="logout()">Logout</button>
+<!-- APP (hidden until unlocked) -->
+<div id="app" class="hidden">
+
+  <!-- LEFT: EDITOR PANEL -->
+  <aside class="left" id="leftPanel">
+    <div class="mob-close-bar" onclick="toggleMob(false)"><div></div></div>
+
+    <div class="left-head">
+      <div class="logo">🎂 <span>Birthday Editor</span></div>
+      <div class="head-actions">
+        <button class="btn btn-save" id="saveBtn" onclick="saveAll()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+          Save All
+        </button>
+        <button class="btn btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="sections-scroll" id="sectionsScroll">
+
+      <!-- BASIC INFO -->
+      <div class="sec open" id="sec-basic" data-sec="basic">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-icon">✏️</span>
+          <span class="sec-title">Basic Info</span>
+          <span class="sec-arrow">▼</span>
+        </div>
+        <div class="sec-body">
+          <label>Her Name</label>
+          <input class="inp" id="f-name" placeholder="Salmana">
+          <label>Subtitle (below name)</label>
+          <input class="inp" id="f-sub" placeholder="Every day with you is a celebration ✨">
+          <label>Main Banner Text</label>
+          <input class="inp" id="f-banner" placeholder="These Memories Make Me Smile">
+        </div>
+      </div>
+
+      <!-- LOVE LETTER PAGE -->
+      <div class="sec" id="sec-letter" data-sec="letter">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-icon">💌</span>
+          <span class="sec-title">Love Letter Page</span>
+          <span class="sec-arrow">▼</span>
+        </div>
+        <div class="sec-body">
+          <div class="toggle-row">
+            <div class="toggle-label">
+              Show this page
+              <small>Show before the birthday page</small>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="f-letter-on" checked>
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+          <label>Letter Text</label>
+          <textarea class="ta" id="f-letter-text" rows="8" placeholder="Write your heartfelt message here..."></textarea>
+          <label>Corner Photos (4)</label>
+          <div class="photo-grid" id="letterPhotoGrid"></div>
+        </div>
+      </div>
+
+      <!-- PHOTOS -->
+      <div class="sec" id="sec-photos" data-sec="photos">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-icon">📷</span>
+          <span class="sec-title">Photos (up to 4)</span>
+          <span class="sec-arrow">▼</span>
+        </div>
+        <div class="sec-body">
+          <div class="photo-grid" id="photoGrid"></div>
+        </div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="sec" id="sec-messages" data-sec="messages">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-icon">🗒️</span>
+          <span class="sec-title">Sticky Messages</span>
+          <span class="sec-arrow">▼</span>
+        </div>
+        <div class="sec-body">
+          <div id="msgList"></div>
+          <button class="add-btn" onclick="addMsg()">+ Add Message</button>
+        </div>
+      </div>
+
+      <!-- MEMORIES -->
+      <div class="sec" id="sec-memories" data-sec="memories">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-icon">💜</span>
+          <span class="sec-title">Memories</span>
+          <span class="sec-arrow">▼</span>
+        </div>
+        <div class="sec-body">
+          <div id="memList"></div>
+          <button class="add-btn" onclick="addMem()">+ Add Memory</button>
+        </div>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="sec" id="sec-password" data-sec="password">
+        <div class="sec-head" onclick="toggleSec(this)">
+          <span class="sec-icon">🔐</span>
+          <span class="sec-title">Change Password</span>
+          <span class="sec-arrow">▼</span>
+        </div>
+        <div class="sec-body">
+          <label>New Password</label>
+          <input class="inp" id="f-newpw" type="password" placeholder="New password">
+          <label>Confirm Password</label>
+          <input class="inp" id="f-newpw2" type="password" placeholder="Confirm password">
+          <button class="add-btn" style="margin-top:10px" onclick="changePw()">Update Password</button>
+          <div id="pw-msg" style="font-size:.8rem;margin-top:6px;min-height:1em"></div>
+        </div>
+      </div>
+
+    </div><!-- /sections-scroll -->
+  </aside>
+
+  <!-- RIGHT: LIVE PREVIEW -->
+  <div class="right">
+    <div class="preview-bar">
+      <span>Preview</span>
+      <button class="prev-tab active" id="tab-party" onclick="switchPreview('party')">🎉 Party Page</button>
+      <button class="prev-tab" id="tab-letter" onclick="switchPreview('letter')">💌 Letter Page</button>
+      <div class="click-hint">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 1.515a3 3 0 00-3 0L3 5.845a3 3 0 00-1.5 2.598v7.117a3 3 0 001.5 2.598l7.5 4.33a3 3 0 003 0l7.5-4.33a3 3 0 001.5-2.598V8.443a3 3 0 00-1.5-2.598l-7.5-4.33z"/></svg>
+        Tap to edit
+      </div>
+    </div>
+    <div class="preview-wrapper">
+      <iframe id="previewFrame" src="party.html?preview=1" title="Preview"></iframe>
     </div>
   </div>
 
-  <div class="content">
+</div>
 
-    <!-- ── BASIC INFO ── -->
-    <div class="card">
-      <div class="card-head"><span class="icon">✏️</span><h2>Basic Info</h2></div>
-      <div class="card-body">
-        <div class="field">
-          <label>Her Name</label>
-          <input type="text" id="f_name" placeholder="e.g. Salmana">
-        </div>
-        <div class="field">
-          <label>Subtitle (below the name)</label>
-          <input type="text" id="f_subtitle" placeholder="e.g. Every day with you is a celebration ✨">
-        </div>
-        <div class="field">
-          <label>Main Banner Text</label>
-          <input type="text" id="f_banner" placeholder="e.g. These Memories Make Me Smile">
-        </div>
-      </div>
-    </div>
-
-    <!-- ── PHOTOS ── -->
-    <div class="card">
-      <div class="card-head"><span class="icon">📸</span><h2>Photos (up to 4)</h2></div>
-      <div class="card-body">
-        <div class="photos-grid" id="photosGrid"></div>
-      </div>
-    </div>
-
-    <!-- ── MESSAGES / STICKY NOTES ── -->
-    <div class="card">
-      <div class="card-head">
-        <span class="icon">📝</span><h2>Sticky Notes</h2>
-        <button class="btn btn-add btn-sm" style="margin-left:auto" onclick="addMessage()">+ Add Note</button>
-      </div>
-      <div class="card-body">
-        <div class="msg-list" id="msgList"></div>
-      </div>
-    </div>
-
-    <!-- ── MEMORIES ── -->
-    <div class="card">
-      <div class="card-head">
-        <span class="icon">💌</span><h2>Memories</h2>
-        <button class="btn btn-add btn-sm" style="margin-left:auto" onclick="addMemory()">+ Add Memory</button>
-      </div>
-      <div class="card-body">
-        <div class="mem-list" id="memList"></div>
-      </div>
-    </div>
-
-    <!-- ── CHANGE PASSWORD ── -->
-    <div class="card">
-      <div class="card-head"><span class="icon">🔒</span><h2>Change Password</h2></div>
-      <div class="card-body">
-        <div class="pw-row">
-          <div class="field">
-            <label>New Password</label>
-            <input type="password" id="f_newpw" placeholder="New password">
-          </div>
-          <div class="field">
-            <label>Confirm</label>
-            <input type="password" id="f_newpw2" placeholder="Confirm">
-          </div>
-          <button class="btn btn-save" onclick="changePassword()">Update</button>
-        </div>
-        <div id="pwMsg" style="font-size:.85rem;margin-top:10px;min-height:16px"></div>
-      </div>
-    </div>
-
-  </div><!-- /content -->
-</div><!-- /adminShell -->
-
-<div class="toast" id="toast">✅ Saved!</div>
+<button class="mob-toggle" onclick="toggleMob()">✏️</button>
+<div id="toast">✓ Saved!</div>
 
 <script>
-/* ── STORAGE ── */
-const DEFAULT_PW = 'birthday';
-function ls(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}}
-function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{alert('Storage full! Try removing some photos.')}}
-function getPw(){return ls('bd_admin_pw')||DEFAULT_PW}
-
+/* ══ DEFAULTS ══ */
 const DEFAULTS={
   name:'Salmana',
   subtitle:'Every day with you is a celebration ✨',
@@ -373,11 +471,11 @@ const DEFAULTS={
   captions:['Us 💜','Always ✦','Forever 🌸','My love ♥'],
   messages:[
     {text:'You are\nso loved 💜',         style:'s-purple', side:'left'},
-    {text:'A little reminder: the world is brighter because you\'re in it. Keep shining always! ✨',style:'s-white',side:'left'},
+    {text:'A little reminder: the world is brighter because you\'re in it. Keep shining always! ✨', style:'s-white', side:'left'},
     {text:'Good vibes only',               style:'badge',   side:'right'},
     {text:'Thankful for you every day 🌸', style:'s-pale',  side:'right'},
     {text:'So lucky to have you 🍀',       style:'s-mini',  side:'left'},
-    {text:'Save this for your bestie\'s birthday too 😄',style:'s-mid',side:'right'},
+    {text:'Save this for your bestie\'s birthday too 😄', style:'s-mid', side:'right'},
   ],
   memories:[
     'The first time I saw you smile, I knew you were the one...',
@@ -385,217 +483,316 @@ const DEFAULTS={
     'The way you make everything better just by being there with me...',
     'Looking forward to a lifetime more of memories with you, my love...',
   ],
+  letter_text:`You are the most beautiful soul I have ever known.\n\nEvery moment with you feels like a dream I never want to wake from. Your smile lights up my entire world, and your laugh is the sweetest sound I know.\n\nOn your birthday, I just want you to know — you are so deeply loved, more than these words can ever say.\n\nHappy Birthday, my love. 💜`,
+  letter_photos:['','','',''],
+  letter_enabled:true,
 };
-function get(k){return ls('bd_'+k)??DEFAULTS[k]}
 
-/* ── LOGIN ── */
-function doLogin(){
-  const val = document.getElementById('pwInput').value;
-  if(val===getPw()){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminShell').style.display='block';
+function ls(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}}
+function lss(k,v){try{localStorage.setItem(k,'bd_'+k,JSON.stringify(v))}catch{}}
+function get(k){return ls('bd_'+k)??DEFAULTS[k]}
+function set(k,v){try{localStorage.setItem('bd_'+k,JSON.stringify(v))}catch{}}
+
+/* ══ GATE ══ */
+function checkPw(){
+  const v=document.getElementById('pwIn').value;
+  const stored=ls('bd_admin_pw')||'birthday';
+  if(v===stored){
+    document.getElementById('gate').style.display='none';
+    document.getElementById('app').classList.remove('hidden');
     loadAll();
-  } else {
-    document.getElementById('loginErr').textContent='Wrong password. Try again.';
+  }else{
+    const e=document.getElementById('gErr');
+    e.textContent='Wrong password, try again';
+    document.getElementById('pwIn').value='';
+    setTimeout(()=>e.textContent='',3000);
   }
 }
-document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 
 function logout(){
-  document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('adminShell').style.display='none';
-  document.getElementById('pwInput').value='';
+  document.getElementById('gate').style.display='flex';
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('pwIn').value='';
 }
 
-/* ── LOAD ── */
-let photosData=[]; // array of base64 or ''
-let captionsData=[];
-
-function loadAll(){
-  document.getElementById('f_name').value      = get('name');
-  document.getElementById('f_subtitle').value  = get('subtitle');
-  document.getElementById('f_banner').value    = get('banner');
-
-  photosData   = [...get('photos')];
-  captionsData = [...get('captions')];
-  renderPhotosGrid();
-  renderMessages();
-  renderMemories();
+/* ══ SECTIONS ══ */
+function toggleSec(head){
+  const sec=head.closest('.sec');
+  sec.classList.toggle('open');
 }
 
-/* ── PHOTOS ── */
-function renderPhotosGrid(){
-  const grid = document.getElementById('photosGrid');
-  grid.innerHTML = '';
-  for(let i=0;i<4;i++){
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `
-      <div class="photo-slot" id="slot${i}" onclick="triggerUpload(${i})">
-        ${photosData[i]
-          ? `<img src="${photosData[i]}" alt="Photo ${i+1}">
-             <button class="ph-remove" onclick="removePhoto(event,${i})">✕</button>`
-          : `<div class="ph-overlay">
-               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-               <span>Add photo</span>
-             </div>
-             <input type="file" accept="image/*" onchange="uploadPhoto(event,${i})">`}
-      </div>
-      <input class="photo-caption-input" id="cap${i}" value="${captionsData[i]||''}" placeholder="Caption...">
+function openSection(id){
+  const sec=document.getElementById('sec-'+id);
+  if(!sec)return;
+  sec.classList.add('open','active','flash');
+  setTimeout(()=>sec.classList.remove('active','flash'),1000);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+  if(window.innerWidth<768)toggleMob(true);
+}
+
+/* ══ MOBILE ══ */
+let mobOpen=false;
+function toggleMob(force){
+  mobOpen=force!==undefined?force:!mobOpen;
+  document.getElementById('leftPanel').classList.toggle('mob-open',mobOpen);
+}
+
+/* ══ PREVIEW ══ */
+let currentPreview='party';
+function switchPreview(page){
+  currentPreview=page;
+  document.getElementById('tab-party').classList.toggle('active',page==='party');
+  document.getElementById('tab-letter').classList.toggle('active',page==='letter');
+  document.getElementById('previewFrame').src=page+'.html?preview=1&t='+Date.now();
+}
+
+function reloadPreview(){
+  const f=document.getElementById('previewFrame');
+  f.src=currentPreview+'.html?preview=1&t='+Date.now();
+}
+
+/* listen for click-to-edit messages from iframe */
+window.addEventListener('message',e=>{
+  const sec=e.data&&e.data.section;
+  if(!sec)return;
+  const map={
+    'basic':'basic','header':'basic',
+    'photos':'photos','polaroids':'photos',
+    'messages':'messages','stickies':'messages',
+    'memories':'memories',
+    'letter':'letter','letter-photos':'letter',
+  };
+  openSection(map[sec]||sec);
+});
+
+/* ══ PHOTO GRID BUILDER ══ */
+function buildPhotoGrid(containerId, photos, captions, lsKey, captionKey, count){
+  const grid=document.getElementById(containerId);
+  if(!grid)return;
+  grid.innerHTML='';
+  for(let i=0;i<count;i++){
+    const slot=document.createElement('div');
+    slot.className='photo-slot';
+    const hasCap=captionKey!==null;
+    const src=photos[i]||'';
+    slot.innerHTML=`
+      ${src?`<img src="${src}" alt="">`:`<span class="ps-icon">+</span><span class="ps-label">Add photo</span>`}
+      <button class="ps-rm" onclick="rmPhoto('${containerId}',${i},'${lsKey}','${captionKey}')">✕</button>
+      <input type="file" accept="image/*" onchange="uploadPhoto(this,'${containerId}',${i},'${lsKey}','${captionKey}')">
     `;
-    grid.appendChild(wrap);
+    grid.appendChild(slot);
+    if(hasCap){
+      const ci=document.createElement('input');
+      ci.className='cap-inp';
+      ci.placeholder='Caption...';
+      ci.value=(captions&&captions[i])||'';
+      ci.addEventListener('input',()=>debounceSave());
+      grid.appendChild(ci);
+    }
   }
 }
 
-function triggerUpload(i){
-  if(photosData[i]) return; // already has photo
-  const slot=document.getElementById('slot'+i);
-  const inp=slot.querySelector('input[type=file]');
-  if(inp) inp.click();
-}
-
-async function uploadPhoto(e,i){
-  const file=e.target.files[0];
-  if(!file) return;
-  const compressed = await compressImage(file,900,.85);
-  photosData[i]=compressed;
-  renderPhotosGrid();
-}
-
-function removePhoto(e,i){
-  e.stopPropagation();
-  photosData[i]='';
-  renderPhotosGrid();
-}
-
-function compressImage(file,maxPx,quality){
-  return new Promise(resolve=>{
+function uploadPhoto(input, containerId, idx, lsKey, capKey){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
     const img=new Image();
-    const url=URL.createObjectURL(file);
     img.onload=()=>{
+      const cv=document.createElement('canvas');
+      const max=900;
       let w=img.width,h=img.height;
-      if(w>maxPx||h>maxPx){
-        const s=maxPx/Math.max(w,h);
-        w=Math.round(w*s);h=Math.round(h*s);
-      }
-      const c=document.createElement('canvas');
-      c.width=w;c.height=h;
-      c.getContext('2d').drawImage(img,0,0,w,h);
-      URL.revokeObjectURL(url);
-      resolve(c.toDataURL('image/jpeg',quality));
+      if(w>max){h=Math.round(h*max/w);w=max}
+      if(h>max){w=Math.round(w*max/h);h=max}
+      cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      const b64=cv.toDataURL('image/jpeg',.85);
+      const photos=get(lsKey)||Array(4).fill('');
+      photos[idx]=b64;
+      set(lsKey,photos);
+      buildPhotoGrid(containerId,photos,capKey?get(capKey):null,lsKey,capKey,4);
+      debounceSave();
     };
-    img.src=url;
-  });
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
-/* ── MESSAGES ── */
+function rmPhoto(containerId, idx, lsKey, capKey){
+  const photos=get(lsKey)||Array(4).fill('');
+  photos[idx]='';
+  set(lsKey,photos);
+  buildPhotoGrid(containerId,photos,capKey?get(capKey):null,lsKey,capKey,4);
+  debounceSave();
+}
+
+/* ══ MESSAGES ══ */
 const STYLES=[
-  {val:'s-purple',label:'Purple note'},
-  {val:'s-white', label:'White note'},
-  {val:'s-accent',label:'Violet note'},
-  {val:'s-pale',  label:'Pale note'},
-  {val:'s-mid',   label:'Lavender note'},
-  {val:'s-mini',  label:'Yellow note'},
-  {val:'badge',   label:'Good vibes badge'},
+  {v:'s-purple',l:'Purple note'},
+  {v:'s-white', l:'White note'},
+  {v:'s-accent',l:'Violet note'},
+  {v:'s-pale',  l:'Pale note'},
+  {v:'s-mid',   l:'Lilac note'},
+  {v:'s-mini',  l:'Yellow note'},
+  {v:'badge',   l:'Badge card'},
 ];
 
-let msgsData=[];
-function renderMessages(){
-  msgsData=[...get('messages')];
-  _buildMsgList();
-}
-function _buildMsgList(){
+function buildMsgList(){
+  const msgs=get('messages');
   const list=document.getElementById('msgList');
   list.innerHTML='';
-  msgsData.forEach((m,i)=>{
+  msgs.forEach((m,i)=>{
     const row=document.createElement('div');
     row.className='msg-row';
+    const styleOpts=STYLES.map(s=>`<option value="${s.v}"${m.style===s.v?' selected':''}>${s.l}</option>`).join('');
     row.innerHTML=`
-      <textarea rows="2" oninput="msgsData[${i}].text=this.value">${m.text||''}</textarea>
-      <select onchange="msgsData[${i}].style=this.value">
-        ${STYLES.map(s=>`<option value="${s.val}"${m.style===s.val?' selected':''}>${s.label}</option>`).join('')}
-      </select>
-      <select class="side-select" onchange="msgsData[${i}].side=this.value">
-        <option value="left"${m.side==='left'?' selected':''}>Left</option>
-        <option value="right"${m.side==='right'?' selected':''}>Right</option>
-      </select>
-      <button class="btn-rm" onclick="removeMsg(${i})">✕</button>
+      <textarea class="ta" rows="2" placeholder="Message...">${m.text||''}</textarea>
+      <div class="msg-row-opts">
+        <select class="mini-select">${styleOpts}</select>
+        <select class="mini-select">
+          <option value="left"${m.side==='left'?' selected':''}>Left</option>
+          <option value="right"${m.side==='right'?' selected':''}>Right</option>
+        </select>
+        <button class="rm-btn" onclick="rmMsg(${i})">✕</button>
+      </div>
     `;
+    row.querySelectorAll('textarea,select').forEach(el=>el.addEventListener('input',()=>debounceSave()));
     list.appendChild(row);
   });
 }
-function addMessage(){
-  msgsData.push({text:'New note ✨',style:'s-purple',side:'left'});
-  _buildMsgList();
-}
-function removeMsg(i){
-  msgsData.splice(i,1);
-  _buildMsgList();
+
+function addMsg(){
+  const msgs=get('messages');
+  msgs.push({text:'',style:'s-purple',side:'left'});
+  set('messages',msgs);
+  buildMsgList();
 }
 
-/* ── MEMORIES ── */
-let memsData=[];
-function renderMemories(){
-  memsData=[...get('memories')];
-  _buildMemList();
+function rmMsg(i){
+  const msgs=get('messages');
+  msgs.splice(i,1);
+  set('messages',msgs);
+  buildMsgList();
+  debounceSave();
 }
-function _buildMemList(){
+
+function readMsgs(){
+  return [...document.querySelectorAll('#msgList .msg-row')].map(row=>{
+    const sels=[...row.querySelectorAll('select')];
+    return{
+      text:row.querySelector('textarea').value,
+      style:sels[0]?.value||'s-purple',
+      side:sels[1]?.value||'left',
+    };
+  });
+}
+
+/* ══ MEMORIES ══ */
+function buildMemList(){
+  const mems=get('memories');
   const list=document.getElementById('memList');
   list.innerHTML='';
-  memsData.forEach((m,i)=>{
+  mems.forEach((m,i)=>{
     const row=document.createElement('div');
     row.className='mem-row';
     row.innerHTML=`
-      <textarea rows="2" oninput="memsData[${i}]=this.value">${m||''}</textarea>
-      <button class="btn-rm" onclick="removeMem(${i})">✕</button>
+      <span style="font-size:.7rem;color:var(--text-dim);font-weight:800;padding-top:9px;flex-shrink:0">${i+1}</span>
+      <textarea class="ta" rows="2" placeholder="Memory...">${m||''}</textarea>
+      <button class="rm-btn" onclick="rmMem(${i})">✕</button>
     `;
+    row.querySelector('textarea').addEventListener('input',()=>debounceSave());
     list.appendChild(row);
   });
 }
-function addMemory(){
-  memsData.push('A beautiful memory...');
-  _buildMemList();
-}
-function removeMem(i){
-  memsData.splice(i,1);
-  _buildMemList();
+
+function addMem(){
+  const mems=get('memories');
+  mems.push('');
+  set('memories',mems);
+  buildMemList();
 }
 
-/* ── SAVE ALL ── */
+function rmMem(i){
+  const mems=get('memories');
+  mems.splice(i,1);
+  set('memories',mems);
+  buildMemList();
+  debounceSave();
+}
+
+function readMems(){
+  return [...document.querySelectorAll('#memList .mem-row textarea')].map(t=>t.value);
+}
+
+/* ══ LOAD ALL ══ */
+function loadAll(){
+  document.getElementById('f-name').value   = get('name');
+  document.getElementById('f-sub').value    = get('subtitle');
+  document.getElementById('f-banner').value = get('banner');
+  document.getElementById('f-letter-text').value = get('letter_text');
+  document.getElementById('f-letter-on').checked = get('letter_enabled')!==false;
+
+  buildPhotoGrid('photoGrid',       get('photos'),       get('captions'), 'photos',       'captions', 4);
+  buildPhotoGrid('letterPhotoGrid', get('letter_photos'), null,            'letter_photos', null,       4);
+  buildMsgList();
+  buildMemList();
+
+  /* input listeners for auto-save */
+  ['f-name','f-sub','f-banner','f-letter-text','f-letter-on'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener(el.type==='checkbox'?'change':'input',()=>debounceSave());
+  });
+}
+
+/* ══ SAVE ══ */
+let saveTimer=null;
+function debounceSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveAll,900);
+}
+
 function saveAll(){
-  // read captions from inputs
-  for(let i=0;i<4;i++){
-    const c=document.getElementById('cap'+i);
-    if(c) captionsData[i]=c.value;
-  }
-  lsSet('bd_name',       document.getElementById('f_name').value||'Salmana');
-  lsSet('bd_subtitle',   document.getElementById('f_subtitle').value);
-  lsSet('bd_banner',     document.getElementById('f_banner').value);
-  lsSet('bd_photos',     photosData);
-  lsSet('bd_captions',   captionsData);
-  lsSet('bd_messages',   msgsData);
-  lsSet('bd_memories',   memsData);
-  showToast('✅ Saved! Open Preview to see changes.');
+  set('name',     document.getElementById('f-name').value.trim()||'Salmana');
+  set('subtitle', document.getElementById('f-sub').value.trim());
+  set('banner',   document.getElementById('f-banner').value.trim());
+  set('letter_text', document.getElementById('f-letter-text').value);
+  set('letter_enabled', document.getElementById('f-letter-on').checked);
+
+  /* captions */
+  const capInputs=[...document.querySelectorAll('#photoGrid .cap-inp')];
+  const caps=capInputs.map(el=>el.value);
+  if(caps.length)set('captions',caps);
+
+  /* messages */
+  set('messages',readMsgs());
+
+  /* memories */
+  set('memories',readMems());
+
+  /* photos are saved on upload */
+
+  showToast();
+  reloadPreview();
 }
 
-/* ── CHANGE PASSWORD ── */
-function changePassword(){
-  const a=document.getElementById('f_newpw').value;
-  const b=document.getElementById('f_newpw2').value;
-  const msg=document.getElementById('pwMsg');
-  if(!a){msg.style.color='#f87171';msg.textContent='Enter a new password.';return}
-  if(a!==b){msg.style.color='#f87171';msg.textContent="Passwords don't match!";return}
-  lsSet('bd_admin_pw',a);
-  msg.style.color='#4ade80';msg.textContent='Password updated!';
-  document.getElementById('f_newpw').value='';
-  document.getElementById('f_newpw2').value='';
-  setTimeout(()=>msg.textContent='',3000);
-}
-
-/* ── TOAST ── */
-function showToast(msg='Saved!'){
+function showToast(){
   const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* ══ PASSWORD CHANGE ══ */
+function changePw(){
+  const a=document.getElementById('f-newpw').value;
+  const b=document.getElementById('f-newpw2').value;
+  const msg=document.getElementById('pw-msg');
+  if(!a){msg.style.color='var(--red)';msg.textContent='Enter a new password';return}
+  if(a!==b){msg.style.color='var(--red)';msg.textContent='Passwords do not match';return}
+  set('admin_pw',a);
+  msg.style.color='var(--green)';msg.textContent='Password updated ✓';
+  document.getElementById('f-newpw').value='';
+  document.getElementById('f-newpw2').value='';
+  setTimeout(()=>msg.textContent='',3000);
 }
 </script>
 </body>

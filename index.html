@@ -692,7 +692,10 @@ function goToParty(){
   const w=$('wipe');
   w.style.transition='transform .45s cubic-bezier(.76,0,.24,1)';
   w.classList.remove('out'); w.classList.add('in');
-  setTimeout(()=>{ window.location.href='party.html'; },460);
+  /* route through letter page if enabled */
+  let dest='party.html';
+  try{const v=localStorage.getItem('bd_letter_enabled');if(v===null||JSON.parse(v)!==false)dest='letter.html';}catch{}
+  setTimeout(()=>{ window.location.href=dest; },460);
 }
 
 /* Reduced motion */

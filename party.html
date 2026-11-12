@@ -437,7 +437,7 @@ img{max-width:100%;display:block}
   Edit Page
 </a>
 
-<header class="header">
+<header class="header" data-section="basic" data-label="✏️ Edit Basic Info">
   <div class="header-glow"></div>
   <div class="hdeco" style="top:18px;left:4%;font-size:1.6rem;color:var(--p3);opacity:.55;transform:rotate(-15deg);animation:hdSpin 6s linear infinite">✦</div>
   <div class="hdeco" style="top:36px;right:7%;font-size:1.1rem;color:var(--p4);opacity:.7;transform:rotate(12deg);animation:hdSpin 8s linear infinite reverse">★</div>
@@ -453,12 +453,12 @@ img{max-width:100%;display:block}
   <p class="sub-line"  id="subLine"></p>
 </header>
 
-<section class="photos-wrap reveal" id="photosReveal">
+<section class="photos-wrap reveal" id="photosReveal" data-section="photos" data-label="📷 Edit Photos">
   <div class="section-label">📷 Our Moments</div>
   <div class="photos-grid" id="photosGrid"></div>
 </section>
 
-<section class="mid-section">
+<section class="mid-section" data-section="messages" data-label="🗒️ Edit Messages">
   <div class="stickies-col" id="leftStickies"></div>
   <div class="cake-col">
     <div class="cake-emoji">🎂</div>
@@ -472,7 +472,7 @@ img{max-width:100%;display:block}
   <div class="banner" id="mainBanner"></div>
 </div>
 
-<section class="memories-section">
+<section class="memories-section" data-section="memories" data-label="💜 Edit Memories">
   <h2 class="mem-title reveal" id="memTitle">💜 Our Memories 💜</h2>
   <div class="memories-list" id="memoriesList"></div>
 </section>
@@ -731,6 +731,29 @@ setTimeout(sparkleHeader, 2000);
 
 /* a little delay so DOM is painted */
 requestAnimationFrame(()=>requestAnimationFrame(setupReveal));
+
+/* ══ PREVIEW / CLICK-TO-EDIT ══ */
+if(new URLSearchParams(location.search).get('preview')){
+  const style=document.createElement('style');
+  style.textContent=`
+    [data-section]{position:relative;cursor:pointer!important}
+    [data-section]:hover::after{
+      content:attr(data-label);
+      position:absolute;top:4px;left:4px;z-index:999;
+      background:rgba(109,40,217,.85);color:#fff;
+      font-family:sans-serif;font-size:11px;font-weight:700;
+      padding:3px 8px;border-radius:4px;pointer-events:none;
+      white-space:nowrap;
+    }
+  `;
+  document.head.appendChild(style);
+  document.querySelectorAll('[data-section]').forEach(el=>{
+    el.addEventListener('click',e=>{
+      e.stopPropagation();
+      window.parent.postMessage({section:el.dataset.section},'*');
+    });
+  });
+}
 
 if(matchMedia('(prefers-reduced-motion:reduce)').matches){
   document.querySelectorAll('.fheart,.cake-emoji').forEach(e=>e.style.animationPlayState='paused');
