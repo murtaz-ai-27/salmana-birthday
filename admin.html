@@ -377,7 +377,7 @@ label{
           </div>
           <label>Letter Text</label>
           <textarea class="ta" id="f-letter-text" rows="8" placeholder="Write your heartfelt message here..."></textarea>
-          <label>Corner Photos (4)</label>
+          <label>Photos &amp; Captions (4)</label>
           <div class="photo-grid" id="letterPhotoGrid"></div>
         </div>
       </div>
@@ -577,7 +577,7 @@ function buildPhotoGrid(containerId, photos, captions, lsKey, captionKey, count)
     const src=photos[i]||'';
     slot.innerHTML=`
       ${src?`<img src="${src}" alt="">`:`<span class="ps-icon">+</span><span class="ps-label">Add photo</span>`}
-      <button class="ps-rm" onclick="rmPhoto('${containerId}',${i},'${lsKey}','${captionKey}')">✕</button>
+      <button class="ps-rm" title="Remove" onclick="event.stopPropagation();rmPhoto('${containerId}',${i},'${lsKey}','${captionKey}')">✕</button>
       <input type="file" accept="image/*" onchange="uploadPhoto(this,'${containerId}',${i},'${lsKey}','${captionKey}')">
     `;
     grid.appendChild(slot);
@@ -732,8 +732,8 @@ function loadAll(){
   document.getElementById('f-letter-text').value = get('letter_text');
   document.getElementById('f-letter-on').checked = get('letter_enabled')!==false;
 
-  buildPhotoGrid('photoGrid',       get('photos'),       get('captions'), 'photos',       'captions', 4);
-  buildPhotoGrid('letterPhotoGrid', get('letter_photos'), null,            'letter_photos', null,       4);
+  buildPhotoGrid('photoGrid',        get('photos'),          get('captions'),         'photos',         'captions',        4);
+  buildPhotoGrid('letterPhotoGrid',  get('letter_photos'),   get('letter_captions'), 'letter_photos', 'letter_captions', 4);
   buildMsgList();
   buildMemList();
 
@@ -758,10 +758,15 @@ function saveAll(){
   set('letter_text', document.getElementById('f-letter-text').value);
   set('letter_enabled', document.getElementById('f-letter-on').checked);
 
-  /* captions */
+  /* party photo captions */
   const capInputs=[...document.querySelectorAll('#photoGrid .cap-inp')];
   const caps=capInputs.map(el=>el.value);
   if(caps.length)set('captions',caps);
+
+  /* letter photo captions */
+  const lCapInputs=[...document.querySelectorAll('#letterPhotoGrid .cap-inp')];
+  const lCaps=lCapInputs.map(el=>el.value);
+  if(lCaps.length)set('letter_captions',lCaps);
 
   /* messages */
   set('messages',readMsgs());
